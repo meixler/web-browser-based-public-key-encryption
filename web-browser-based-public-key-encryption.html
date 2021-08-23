@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>		
+		<meta charset="utf-8">
+		<title>Web Browser Based Public-Key Encryption</title>
+	</head>		
+	<style>
+		body {
+	  		font-family: 'Helvetica', 'Arial', 'sans-serif'; 
+			color: black;
+			font-size: 11pt;		
+		}
+		
+		ul {
+			list-style-type: none;
+		}
+
+		.ultop {
+			margin: 0;
+			padding: 0;
+		}
+
+		a, a:link, a:visited, a:active {
+			color: blue;
+			text-decoration: underline;
+		}
+
+		a:hover {
+			cursor:pointer;
+			color: red;
+		}
+		
+		.container {
+			width: 80%;
+			margin: 0 auto;
+		}
+
+		.zeropaddingzeromargin {
+			padding: 0;
+			margin: 0;
+		}
+		
+		.errortext {
+			color: red;	  
+		}
+			
+	</style>		
+	<body>
+		<div class="container" id=divhead>						
+			<h1>Web Browser Based Public-Key Encryption</h1>
+			<h3>Simple public-key cryptography using just your web browser</h3>
+			<p>Use your web browser to encrypt and decrypt files using public-key cryptography, in order to exchange confidential files with others through an insecure medium such as email, instant messaging, etc.</p>
+			<p> </p>
+		</div>
+
+		<div class="container" id=divmainmenuouter>
+			<table width=100% border=0>
+				<tr>
+					<td width=90%>
+						<div id=divmainmenu>
+						</div>	
+					</td>
+					<td align=right valign=top>
+						<a id=areset><button id=btnreset>Reset</button></a>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+				
+		<div class="container" id=div0>
+			<hr>
+			<h3>Usage</h3>
+			<p>
+			If you are already familiar with the basics of public-key encryption (also known as asymmetric cryptography), great!  But if not, no problem.  
+			The main menu above will guide you through the process.  Start by indicating whether you sending a confidential file to someone else or you are receiving a confidential file from someone else.
+			</p>
+									
+			<h3>Operation and privacy</h3>
+			<p>			
+			This page uses javascript running within your web browser to encrypt and decrypt files client-side, in-browser. 
+			This page makes no network connections during this process, to ensure that your files and keys never leave the web browser during the process.
+			This can be independently verified by reviewing the source code for this page, or by monitoring your web browser's <a href=https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor>networking activity</a> during operation of this page. 
+			This page can also be downloaded and run locally on your system offline.  
+			</p>
+
+			<h3>Cryptography</h3>
+			<p>
+			All client-side cryptography is implemented using the <a href=https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API>Web Crypto API</a>.  
+			Key pairs are generated using Diffie-Hellman elliptic curve cryptography with the P-256 curve.  
+			A shared secret between the sender and recipient is derived using ECDH key exchange.  
+			The confidential file is then encrypted using 256-bit AES-GCM, using the shared secret as the AES key.
+			</p>
+			
+			<h3>Running this page offline</h3>
+			<p>
+			This web page is self-contained. The page does not require any supporting files; all javascript and css for this page is contained in the source code of this page. 
+			To run this page locally on your system offline, simply save this page to your system as a .html file, then open the file from your system in your web browser (optionally with networking disabled). 
+			</p>
+					
+			<h3>Verifying the integrity of this page</h3>
+			<p>
+			The expected SHA256 checksum hash of the .html file containing this page is posted at <a href=https://github.com/meixler/web-browser-based-public-key-encryption>https://github.com/meixler/web-browser-based-public-key-encryption</a>.
+			If loading this page from a web server, you can verify that the checksum hash of the .html file downloaded from the web server matches the expected checksum hash using the <a href=https://www.pageintegrity.net/>Page Integrity browser extension</a>.
+			If running this page offline, it is recommended that you verify that the checksum hash of the .html file matches the expected checksum hash before opening the file in your web browser.
+			</p>
+					
+			<h3>License</h3>
+			<p>
+			This project is licensed under the <a href='https://www.gnu.org/licenses/gpl-3.0.en.html'>GPL-3.0</a> open source license.
+			</p>
+
+			<h3>GitHub</h3>
+			<p>
+			This project can be found on GitHub at <a href=https://github.com/meixler/web-browser-based-public-key-encryption>https://github.com/meixler/web-browser-based-public-key-encryption</a>.
+			</p>
+			
+			<h3>Contact</h3>
+			<p>
+			Please <a href='https://www.meixler-tech.com/contact.php'>contact MTI</a> for any questions or comments concerning this project.
+			</p>
+												
+			
+			
+		</div>	
+
+		<div class="container" id=div001>
+			<hr>
+			<h3>Ask Recipient to Create Key Pair</h3>
+			<p>
+			The first step in the process of using public-key encryption to send a confidential file to someone else is for the recipient to create a public and private key pair.
+			You will need the recipient's public key file in order to proceed.
+			Contact the recipient, and direct the recipient to this page, where the recipient can create a key pair, then send you their public key file.
+			</p>
+		</div>	
+
+		<div class="container" id=div011>
+			<hr>
+			<h3>Create Key Pair</h3>
+			<p>
+			The first step in the process of using public-key encryption to receive a confidential file from someone else is for you (the recipient) to create a public and private key pair.
+			Click the button below to create a key pair.  Then, save both the private key file and the public key file to your system.  
+			</p>
+			<p>
+			The private key file must be stored securely on your system and should never be shared with anyone (hence the name 'private key').  
+			The public key file can be shared with someone that needs to encrypt a confidential file to send to you.
+			After saving both files to your system. send the public key file to the sender, and direct the sender to this page to proceed with the next steps.  The public key file can be sent to the sender via email, instant messaging, or any other (secure or insecure) medium.
+			</p>
+			<p><button id=btncreatekeypair onclick=javascript:createkeypair();>Create Key Pair</button></p>			
+			<p> </p>
+			<p><a id=asaveprivatekeyfile><button id=btnsaveprivatekeyfile>Save Private Key File</button></a></p>
+			<p> </p>
+			<p><a id=asavepublickeyfile><button id=btnsavepublickeyfile>Save Public Key File</button></a></p>	
+			<p> </p>
+			<div id=div011nextsteps>
+				<p>Next Steps:</p>
+				<p>
+				After the sender receives your public key file, the sender will proceed using this page.  The next step is for the sender to verify that the public key file that he/she received from you was not compromised by an adversary in transit from you to the sender.
+				The sender will contact you to verify the public key in the file.  At that point, return to this page and the main menu will guide you through the verifcation process.  You will need your private key file for this step.  
+				</p>
+				<p>
+				Upon successful verification of the public key, the sender will use your public key file to encrypt the confidential file, and send the encrypted confidential file to you.
+				At that point, you will need your private key file to decrypt the confidential file.  Again, return to this page, and the main menu will guide you through the process.
+				</p>		
+			</div>		
+			<div id=div011error class=errortext></div>				
+		</div>	
+		
+		<div class="container" id=div0001>
+			<hr>
+			<h3>Verify Recipient's Public Key</h3>
+			<p>
+			To ensure that the recipient's public key was not compromised by an adversary while in transit from the recipient to you, the recipient's public key must be verified.
+			</p>
+			<p>
+			To start, click the button below to open the recipient's public key file that you received from the recipient.
+			Then, contact the recipient by phone (or through some medium other than the medium through which the recipient sent you their public key file).
+			Verify that you are in fact in contact with the recipient that you intend to send the confidential file to.
+			Then, direct the recipient to this page, and ask the recipient to proceed with the verification procedure from their end.  The main menu will guide the recipient through this procedure.
+			</p>			
+			<input type="file" id="filesenderverifypublickey" onchange=javascript:senderverifypublickey(this.files);>
+			<p> </p>
+			<div id=divsenderverificationcodes>
+				<p>Both you and the recipient should have identical codes for code 1 and code 2 below:</p>
+				<table>
+					<tr>
+						<td width=5%></td>
+						<td width=40%>
+							<u>Code 1</u>
+							<pre id=presenderpubkeyfirsthalf></pre>
+							<p>Ask the recipient to read code 1 to you from their device.  Confirm that it matches code 1 above:</p>
+						</td>
+						<td width=10%> </td>
+						<td width=40%>
+							<u>Code 2</u>
+							<pre id=presenderpubkeysecondhalf></pre>
+							<p>Read code 2 above to the recipient.  The recipient should confirm that it matches code 2 on their device.</p>													
+						</td>
+						<td width=5%></td>
+					</tr>
+				</table>
+				<p>
+				If there is a mismatch in either of the codes above, then both you and the recipient should start the entire process over, with the recipient generating a new key pair and sending you their new public key file.
+				If both codes match, then you can proceed to encrypt the confidential file using the recipient's public key.  Use the main menu above to guide you through this step.
+				</p>
+			</div>		
+			<div id=div0001error class=errortext></div>		
+		</div>	
+
+		<div class="container" id=div0100>
+			<hr>
+			<h3>Verify Public Key</h3>
+			<p>
+			To ensure that your public key was not compromised by an adversary while in transit from you to the sender, the sender must verify your public key.
+			</p>
+			<p>
+			To start, click the button below to open your <u>private</u> key file.  
+			</p>			
+			<input type="file" id="filerecipientverifypublickey" onchange=javascript:recipientverifypublickey(this.files);>
+			<p> </p>
+			<div id=divrecipientverificationcodes>
+				<p>Both you and the sender should have identical codes for code 1 and code 2 below:</p>
+				<table>
+					<tr>
+						<td width=5%></td>
+						<td width=40%>
+							<u>Code 1</u>
+							<pre id=prerecipientpubkeyfirsthalf></pre>
+							<p>Read code 1 above to the sender.  The sender should confirm that it matches code 1 on their device.</p>
+						</td>
+						<td width=10%> </td>
+						<td width=40%>
+							<u>Code 2</u>
+							<pre id=prerecipientpubkeysecondhalf></pre>
+							<p>Ask the sender to read code 2 to you from their device.  Confirm that it matches code 2 above:</p>
+						</td>
+						<td width=5%></td>
+					</tr>
+				</table>
+				<p>
+				If there is a mismatch in either of the codes above, then both you and the sender should start the entire process over, with you generating a new key pair and sending your new public key file to the sender.
+				If both codes match, then the sender can proceed to encrypt the confidential file using the your public key.  
+				Wait to receive the encrypted confidential file from the sender, then return to this page and use the main menu to guide you through the step to decrypt the confidential file.
+				</p>
+			</div>			
+			<div id=div0100error class=errortext></div>			
+		</div>	
+
+		<div class="container" id=div0000>
+			<hr>
+			<h3>Encrypt File Using Recipient's Public Key</h3>
+			<p>
+			You are now ready to encrypt the confidential file using the recipient's public key.  Use the buttons below to select the recipient's public key file and the confidential file to encrypt.  Then click 'Encrypt File', and finally save the encrypted file to your system.
+			</p>			
+			<p> </p>			
+			<p>
+			Select recipient's public key file:<BR>
+			<input type="file" id="fileencryptfilerecipientypublickey" onchange=javascript:encryptfilevalidation();>
+			</p>			
+			<p> </p>									
+			<p>
+			Select confidential file to encrypt:<BR>
+			<input type="file" id="fileencryptfilefile" onchange=javascript:encryptfilevalidation();>
+			</p>			
+			<p> </p>						
+			<p>
+			<button id=btnencryptfile onclick=javascript:encryptfile();>Encrypt File</button>			
+			</p>						
+			<p> </p>
+			<p>
+			<a id=asaveencryptedfile><button id=btnsaveencryptedfile onclick=javascript:div0000nextsteps.style.display='block';>Save Encrypted File</button></a>
+			</p>	
+			<div id=div0000nextsteps>
+				<p>
+				After saving the encrypted file, send the encrypted file to the recipient.  The encrypted file can be sent to the recipient via email, instant messaging, or any other (secure or insecure) medium.
+				Upon receiving the encrypted file, the recipient can proceed to decrypt the file using this page.
+				</p>		
+			</div>		
+			<div id=div0000error class=errortext></div>
+		</div>	
+
+		<div class="container" id=div0101>
+			<hr>
+			<h3>Decrypt File Using Your Private Key</h3>
+			<p>
+			The sender has encrypted the confidential file using your public key, and now you are ready to decrypt the file using your private key.  Use the buttons below to select your private key file and the encrypted confidential file to decrypt.  Then click 'Decrypt File', and finally save the decrypted file to your system.
+			</p>			
+			<p> </p>			
+			<p>
+			Select private key file:<BR>
+			<input type="file" id="filedecryptfilerecipientyprivatekey" onchange=javascript:decryptfilevalidation();>
+			</p>			
+			<p> </p>									
+			<p>
+			Select encrypted confidential file to decrypt:<BR>
+			<input type="file" id="filedecryptfilefile" onchange=javascript:decryptfilevalidation();>
+			</p>			
+			<p> </p>						
+			<p>
+			<button id=btndecryptfile onclick=javascript:decryptfile();>Decrypt File</button>			
+			</p>						
+			<p> </p>
+			<p>
+			<a id=asavedecryptedfile><button id=btnsavedecryptedfile onclick=javascript:div0101nextsteps.style.display='block';>Save Decrypted File</button></a>
+			</p>	
+			<div id=div0101nextsteps>
+				<p>
+				After saving the decrypted file, it is recommended that you delete the key pair that you used to receive this encrypted file, and create a new key pair next time you need to receive another encrypted file.
+				</p>		
+			</div>	
+			<div id=div0101error class=errortext></div>							
+		</div>	
+
+		<div class="container" id=div0102>
+			<hr>
+			<h3>Waiting For Sender</h3>
+			<p>
+			Hang tight and wait to hear back from the sender!
+			</p>			
+		</div>	
+
+					
+	</body>
+	<script type="text/javascript">
+		areset.param=[0];
+		areset.addEventListener('click', updatemenu, false);
+		updatemenu([0]);
+		
+		function updatemenu(evt) {
+			if(!evt || !evt.currentTarget || typeof evt.currentTarget==='undefined') { var selection=[0]; } else { var selection=evt.currentTarget.param; }
+						
+			var elems=['div0', 'div001', 'div011', 'div0001', 'div0100', 'div0000', 'div0101', 'div0102', 'div011nextsteps', 'div0000nextsteps', 'div0101nextsteps', 'divsenderverificationcodes', 'divrecipientverificationcodes'];
+			for(var i=0; i<elems.length; i++) {
+				document.getElementById(elems[i]).style.display='none';
+			}
+						
+			var elems=['asaveprivatekeyfile', 'btnsaveprivatekeyfile', 'asavepublickeyfile', 'btnsavepublickeyfile', 'btnencryptfile', 'asaveencryptedfile', 'btnsaveencryptedfile', 'btndecryptfile', 'asavedecryptedfile', 'btnsavedecryptedfile'];
+			for(var i=0; i<elems.length; i++) {
+				document.getElementById(elems[i]).disabled=true;
+			}
+
+			var elems=['filesenderverifypublickey', 'filerecipientverifypublickey', 'fileencryptfilerecipientypublickey', 'fileencryptfilefile', 'filedecryptfilerecipientyprivatekey', 'filedecryptfilefile'];
+			for(var i=0; i<elems.length; i++) {
+				document.getElementById(elems[i]).value=null;
+			}
+			
+			elems=['div0001error', 'div011error', 'div0100error', 'div0000error', 'div0101error'];
+			for(var i=0; i<elems.length; i++) {
+				document.getElementById(elems[i]).innerText='';
+			}
+												
+			var menudata=
+			[
+				{
+					"text":	null,
+					"subtext":	"Are you sending a confidential file to someone else, or are you receiving a confidential file from someone else?",
+					"children":
+					[
+						{
+							"text": "I am the sender",
+							"subtext": "Have you received the recipient's public key for this file transfer?",
+							"children":
+							[
+								{
+									"text":	"Yes",
+									"subtext":	"Have you verified the recipient's public key with the recipient?",
+									"children": 	
+									[									
+										{
+											"text":	"Yes",
+											"subtext":	null,
+											"children": 	[]									
+										},
+										{
+											"text":	"No",
+											"subtext":	null,
+											"children": 	[]
+										}							
+									]										
+								},
+								{
+									"text":	"No",
+									"subtext":	"",
+									"children": 	{}
+								}
+							]
+						},					
+						{
+							"text": "I am the recipient",
+							"subtext": "Have you created a key pair to use for this file transfer and sent the public key file to the sender?",
+							"children":
+							[
+								{
+									"text":	"Yes",
+									"subtext":	"Which of the following applies?",
+									"children": 	
+									[
+										{
+											"text":	"The sender is contacting me now to verify the public key that I sent them",
+											"subtext":	null,
+											"children": 	[]									
+										},
+										{
+											"text":	"I have received the encrypted file from the sender",
+											"subtext":	null,
+											"children": 	[]
+										},																								
+										{
+											"text":	"Neither of the above",
+											"subtext":	null,
+											"children": 	[]
+										},																								
+										
+									]
+								},
+								{
+									"text":	"No",
+									"subtext":	null,
+									"children": 	[]
+								}							
+							]				
+						}
+					]
+				}
+			];
+
+			divmainmenu.innerHTML='';						
+	
+			var h3=document.createElement('h3');
+			h3.classList.add('zeropaddingzeromargin');
+			h3.innerText='Main Menu';
+			divmainmenu.appendChild(h3);					
+			
+			var d=menudata;
+			
+			var ul=document.createElement('ul');		
+			ul.classList.add('ultop');		
+			divmainmenu.appendChild(ul);					
+						
+			for(var i=0; i<selection.length; i++) {
+				if(d[selection[i]].text) {
+					var li = document.createElement('li');
+					if(i==0) { li.innerHTML=d[selection[i]].text; } else { li.innerHTML='&#x25b6; ' + d[selection[i]].text; }
+					ul.appendChild(li);
+				}
+												
+				var li = document.createElement('li');
+				ul.appendChild(li);
+				var ul=document.createElement('ul');				
+				li.appendChild(ul);
+				
+				if(d[selection[i]].subtext) {
+					var li = document.createElement('li');				
+					li.innerHTML='&#x25b6; ' + d[selection[i]].subtext;
+					ul.appendChild(li);
+				}					
+			
+				d=d[selection[i]].children;	
+
+				if(d.length>0) {
+					var li = document.createElement('li');
+					ul.appendChild(li);
+					var ul=document.createElement('ul');				
+					li.appendChild(ul);
+				}											
+			}
+		
+			for(var i=0; i<d.length; i++) {
+				var li = document.createElement('li');
+				var a = document.createElement('a');
+				a.innerText=d[i].text;
+				a.param=selection.concat([i]);
+				a.addEventListener('click', updatemenu, false);
+				li.appendChild(a);		
+				ul.appendChild(li);
+			}
+
+			var selectionstring=selection.join('');
+			var elem=document.getElementById('div' + selectionstring);
+			if(elem) { elem.style.display='block'; }
+		}
+				
+
+		function createkeypair(evt) {
+			var ecdhkeypair, ecdhprivatekeyjwk, ecdhpublickeyjwk;
+			div011error.innerText='';
+			window.crypto.subtle.generateKey({name: "ECDH", namedCurve: "P-256"}, true, ["deriveKey"])
+			.then(function(result) {
+				ecdhkeypair=result;
+				return window.crypto.subtle.exportKey("jwk", ecdhkeypair.privateKey)	
+			}).then(function(result) {					
+				ecdhprivatekeyjwk=result;
+				return window.crypto.subtle.exportKey("jwk", ecdhkeypair.publicKey)	
+			}).then(function(result) {					
+				ecdhpublickeyjwk=result;
+				
+				var blob = new Blob([JSON.stringify(ecdhprivatekeyjwk)], {type: 'text/plain'});
+				var blobUrl  = URL.createObjectURL(blob);
+				asaveprivatekeyfile.href = blobUrl;
+				asaveprivatekeyfile.download = 'privatekey.json';
+				asaveprivatekeyfile.disabled=false;
+				btnsaveprivatekeyfile.disabled=false;
+				
+				var blob = new Blob([JSON.stringify(ecdhpublickeyjwk)], {type: 'text/plain'});
+				var blobUrl  = URL.createObjectURL(blob);
+				asavepublickeyfile.href = blobUrl;
+				asavepublickeyfile.download = 'publickey.json';
+				asavepublickeyfile.disabled=false;
+				btnsavepublickeyfile.disabled=false;	
+				
+				div011nextsteps.style.display='block';								
+			}).catch(function(error) {
+				div011error.innerText='Something went wrong.  See console log for more info';
+				console.log(error);
+			});				
+		}	
+					
+		function senderverifypublickey(files) {
+			var publickeyjson;
+			div0001error.innerText='';
+			readtextfile(files[0])
+			.then(function(result) {
+				publickeyjson=result;
+				return window.crypto.subtle.importKey("jwk", JSON.parse(publickeyjson), {name: "ECDH", namedCurve: "P-256"}, true, [])
+			}).then(function(result) {								
+				var publickey=result;
+				if(publickey.type!='public') { throw 'incorrect key type'; }
+				var ui8array=Base64URLStringToUint8Array(JSON.parse(publickeyjson).x);
+				var hex=Uint8ArrayToHexString(ui8array);
+				var pubkeyfirsthalf=hex.slice(0, 32).replace(/(.{4})/g,"$1 ")
+				var pubkeysecondhalf=hex.slice(32, 64).replace(/(.{4})/g,"$1 ")
+				presenderpubkeyfirsthalf.innerText=pubkeyfirsthalf;
+				presenderpubkeysecondhalf.innerText=pubkeysecondhalf;
+				divsenderverificationcodes.style.display='block';
+			}).catch(function(error) {
+				div0001error.innerText='File selected does not appear to be of the correct format.';
+				console.log(error);
+			});
+		}
+
+		function recipientverifypublickey(files) {
+			var privatekeyjson;
+			div0100error.innerText='';
+			readtextfile(files[0])
+			.then(function(result) {
+				privatekeyjson=result;
+				return window.crypto.subtle.importKey("jwk", JSON.parse(privatekeyjson), {name: "ECDH", namedCurve: "P-256"}, true, ["deriveKey"])
+			}).then(function(result) {				
+				var privatekey=result;
+				if(privatekey.type!='private') { throw 'incorrect key type'; }
+				var ui8array=Base64URLStringToUint8Array(JSON.parse(privatekeyjson).x);
+				var hex=Uint8ArrayToHexString(ui8array);
+				var pubkeyfirsthalf=hex.slice(0, 32).replace(/(.{4})/g,"$1 ")
+				var pubkeysecondhalf=hex.slice(32, 64).replace(/(.{4})/g,"$1 ")
+				prerecipientpubkeyfirsthalf.innerText=pubkeyfirsthalf;
+				prerecipientpubkeysecondhalf.innerText=pubkeysecondhalf;
+				divrecipientverificationcodes.style.display='block';
+			}).catch(function(error) {
+				div0100error.innerText='File selected does not appear to be of the correct format.';
+				console.log(error);
+			});
+		}
+		
+		function encryptfilevalidation() {
+			btnencryptfile.disabled=!(fileencryptfilerecipientypublickey.value && fileencryptfilefile.value);
+		}
+				
+		function encryptfile() {
+			var recipientpublickeyjson, recipientpublickey;
+			var senderkeypair, senderpublickeyjson;
+			var aeskey, iv, aad;
+			div0000error.innerText='';			
+			readtextfile(fileencryptfilerecipientypublickey.files[0])
+			.then(function(result) {
+				recipientpublickeyjson=result;
+				return window.crypto.subtle.importKey("jwk", JSON.parse(recipientpublickeyjson), {name: "ECDH", namedCurve: "P-256"}, true, [])
+			}).then(function(result) {
+				recipientpublickey=result;
+				return window.crypto.subtle.generateKey({name: "ECDH", namedCurve: "P-256"}, true, ["deriveKey"])	
+			}).then(function(result) {
+				senderkeypair=result;
+				return window.crypto.subtle.exportKey("jwk", senderkeypair.publicKey)	
+			}).then(function(result) {				
+				senderpublickeyjson=JSON.stringify(result);
+				return window.crypto.subtle.deriveKey({name: "ECDH", namedCurve: "P-256",public: recipientpublickey}, senderkeypair.privateKey, {name: "AES-GCM", length: 256}, false, ["encrypt"])
+			}).then(function(result) {				
+				aeskey=result;		
+				iv=window.crypto.getRandomValues(new Uint8Array(12));	
+				aad=new Uint8Array();		
+				return readbinaryfile(fileencryptfilefile.files[0])			
+			}).then(function(result) {
+				result=new Uint8Array(result);
+				var filenamebytes=new TextEncoder("utf-8").encode(fileencryptfilefile.files[0].name);
+				var plaintextbytes=new Uint8Array(filenamebytes.length + 1 + result.length);
+				plaintextbytes.set(filenamebytes, 0);
+				plaintextbytes.set(new Uint8Array([0]), filenamebytes.length);
+				plaintextbytes.set(result, filenamebytes.length+1);			
+				return window.crypto.subtle.encrypt({name: "AES-GCM", iv: iv, additionalData: aad, tagLength: 128}, aeskey, plaintextbytes)							
+			}).then(function(result) {		
+				result=new Uint8Array(result);		
+				var payloadbytes=new Uint8Array(140 + result.length);
+				payloadbytes.set(Base64URLStringToUint8Array(JSON.parse(recipientpublickeyjson).x), 0);
+				payloadbytes.set(Base64URLStringToUint8Array(JSON.parse(recipientpublickeyjson).y), 32);				
+				payloadbytes.set(Base64URLStringToUint8Array(JSON.parse(senderpublickeyjson).x), 64);
+				payloadbytes.set(Base64URLStringToUint8Array(JSON.parse(senderpublickeyjson).y), 96);				
+				payloadbytes.set(iv, 128);
+				payloadbytes.set(result, 140);
+				result=null;
+
+				var blob=new Blob([payloadbytes], {type: 'application/download'});
+				var blobUrl=URL.createObjectURL(blob);
+				asaveencryptedfile.href=blobUrl;
+				asaveencryptedfile.download='encryptedfile.bin';
+				asaveencryptedfile.disabled=false;
+				btnsaveencryptedfile.disabled=false;
+			}).catch(function(error) {						
+				if (error instanceof SyntaxError) {
+					div0000error.innerText="Recipient's public key file does not appear to be of the correct format.";
+				} else {
+					div0000error.innerText='Something went wrong.  See console log for more info';
+				}						
+				console.log(error);
+			});
+		}
+		
+		function decryptfilevalidation() {
+			btndecryptfile.disabled=!(filedecryptfilerecipientyprivatekey.value && filedecryptfilefile.value);
+		}
+		
+		function decryptfile() {
+			var recipientprivatekeyjson, recipientprivatekey;
+			var payloadbytes;
+			div0101error.innerText='';			
+			readtextfile(filedecryptfilerecipientyprivatekey.files[0])
+			.then(function(result) {
+				recipientprivatekeyjson=result;
+				return window.crypto.subtle.importKey("jwk", JSON.parse(recipientprivatekeyjson), {name: "ECDH", namedCurve: "P-256"}, true, ["deriveKey"])
+			}).then(function(result) {				
+				recipientprivatekey=result;
+				return readbinaryfile(filedecryptfilefile.files[0])			
+			}).then(function(result) {
+				payloadbytes=new Uint8Array(result);
+				var recipientpublickeyfrompayloadfilexbytes=payloadbytes.slice(0,32);
+				var recipientpublickeyfromprivatekeyfilexbytes=Base64URLStringToUint8Array(JSON.parse(recipientprivatekeyjson).x);
+				var recipientpublickeyfrompayloadfileybytes=payloadbytes.slice(32,64);
+				var recipientpublickeyfromprivatekeyfileybytes=Base64URLStringToUint8Array(JSON.parse(recipientprivatekeyjson).y);				
+				if(!(CompareArrays(recipientpublickeyfrompayloadfilexbytes, recipientpublickeyfromprivatekeyfilexbytes) && CompareArrays(recipientpublickeyfrompayloadfileybytes, recipientpublickeyfromprivatekeyfileybytes))) {
+					throw "Incorrect private key";	
+				}
+				var senderpublickeyxbytes=payloadbytes.slice(64,96);
+				var senderpublickeyybytes=payloadbytes.slice(96,128);
+				var senderpublickeyjson='{"crv":"P-256","ext":true,"key_ops":[],"kty":"EC","x":"' + Uint8ArrayToBase64URLString(senderpublickeyxbytes) + '","y":"' + Uint8ArrayToBase64URLString(senderpublickeyybytes) + '"}';
+				return window.crypto.subtle.importKey("jwk", JSON.parse(senderpublickeyjson), {name: "ECDH", namedCurve: "P-256"}, true, [])
+			}).then(function(result) {
+				senderpublickey=result;
+				return window.crypto.subtle.deriveKey({name: "ECDH", namedCurve: "P-256",public: senderpublickey}, recipientprivatekey, {name: "AES-GCM", length: 256}, false, ["decrypt"])
+			}).then(function(result) {				
+				var aeskey=result;		
+				var iv=payloadbytes.slice(128,140);
+				var aad=new Uint8Array();		
+				var ciphertextbytes=payloadbytes.slice(140,payloadbytes.length);
+				payloadbytes=null;
+				return window.crypto.subtle.decrypt({name: "AES-GCM", iv: iv, additionalData: aad, tagLength: 128}, aeskey, ciphertextbytes)							
+			}).then(function(result) {		
+				result=new Uint8Array(result);	
+				var i=result.indexOf(0);
+				var filename=new TextDecoder("utf-8").decode(result.slice(0,i));
+				var plaintextbytes=result.slice(i+1, result.length);
+				
+				var blob=new Blob([plaintextbytes], {type: 'application/download'});
+				var blobUrl=URL.createObjectURL(blob);
+				asavedecryptedfile.href=blobUrl;
+				asavedecryptedfile.download=filename;
+				asavedecryptedfile.disabled=false;
+				btnsavedecryptedfile.disabled=false;				
+			}).catch(function(error) {
+				if(error instanceof SyntaxError) {
+					div0101error.innerText="Private key file does not appear to be of the correct format.";
+				} else if(error=="Incorrect private key") {
+					div0101error.innerText="Private key selected does not correspond with the public key that the sender used to encrypt the file.";
+				} else {
+					div0101error.innerText='Something went wrong.  See console log for more info';
+				}						
+				console.log(error);
+			});				
+		}
+				
+		function readtextfile(file){
+			return new Promise((resolve, reject) => {
+				var fr = new FileReader();  
+				fr.onload = () => {
+					resolve(fr.result )
+				};
+				fr.readAsText(file);
+			});
+		}
+		
+		function readbinaryfile(file){
+			return new Promise((resolve, reject) => {
+				var fr = new FileReader();  
+				fr.onload = () => {
+					resolve(fr.result )
+				};
+				fr.readAsArrayBuffer(file);
+			});
+		}
+						
+		function Base64StringToUint8Array(base64string) {
+			var binary= window.atob(base64string);
+			var result=new Uint8Array(binary.length);
+			for(var i=0; i<binary.length; i++)        {
+				result[i]=binary.charCodeAt(i);
+			}
+			return result;
+		}
+			
+		function Base64URLStringToUint8Array(base64urlstring) {
+			var result=base64urlstring;
+			result=result.replace(/-/g, '+');
+			result=result.replace(/_/g, '/');
+			result=Base64StringToUint8Array(result);
+			return result;
+		}
+		
+		function Uint8ArrayToBase64String(ui8array) {
+			var binary='';
+			for(var i=0; i<ui8array.byteLength; i++) {
+				binary+=String.fromCharCode(ui8array[i]);
+			}
+			return window.btoa(binary);
+		}
+		
+		function Uint8ArrayToBase64URLString(ui8array) {
+			var result=Uint8ArrayToBase64String(ui8array);
+			result=result.replace(/\+/g, '-');
+			result=result.replace(/\//g, '_');
+			result=result.replace(/=/g, '');
+			return result;
+		}
+		
+		function Uint8ArrayToHexString(ui8array) {
+			var hexstring='', h;
+			for(var i=0; i<ui8array.length; i++) {
+				h=ui8array[i].toString(16);
+				if(h.length==1) { h='0'+h; }
+				hexstring+=h;
+			}	
+			var p=Math.pow(2, Math.ceil(Math.log2(hexstring.length)));
+			hexstring=hexstring.padStart(p, '0');
+			return hexstring;
+		}	
+		
+		function CompareArrays(a1, a2) {
+			if(a1.length!=a2.length) { return false; }
+			for(var i=0; i<a1.length; i++) { 
+				if(a1[i]!=a2[i]) { return false; }
+			}
+			return true;
+		}
+				
+	</script>
+</html>
+
