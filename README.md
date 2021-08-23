@@ -1,6 +1,8 @@
 # Web Browser Based Public-Key Encryption
 
-Simple public-key cryptography using just your web browser. Use your web browser to encrypt and decrypt files using public-key cryptography, in order to exchange confidential files with others through an insecure medium such as email, instant messaging, etc.
+### Simple public-key cryptography using just your web browser. 
+
+Use your web browser to encrypt and decrypt files using public-key cryptography, in order to exchange confidential files with others through an insecure medium such as email, instant messaging, etc.
 
 ## Usage
 
