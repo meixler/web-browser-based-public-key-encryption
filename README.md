@@ -8,8 +8,7 @@ Use your web browser to encrypt and decrypt files using public-key cryptography,
 
 Download [web-browser-based-public-key-encryption.html](https://github.com/meixler/web-browser-based-public-key-encryption/blob/master/web-browser-based-public-key-encryption.html), then open the .html document in your web browser.  Or, simply point your web browser to the .html document hosted [here](https://www.meixler-tech.com/web-browser-based-public-key-encryption.html).
 
-Then, if you are already familiar with the basics of public-key encryption (also known as asymmetric cryptography), great!  But if not, no problem.
-The main menu will guide you through the process.  Start by indicating whether you sending a confidential file to someone else or you are receiving a confidential file from someone else.
+Then, use the web page rendered in your browser to encrypt a file using the recipient’s public key, or decrypt a file using your private key.  If you are already familiar with the basics of public-key encryption (also known as asymmetric cryptography), great!  But if not, no problem.  The main menu will guide you through the process.  Start by indicating whether you sending a confidential file to someone else or you are receiving a confidential file from someone else.
 
 ## Operation and privacy
 
