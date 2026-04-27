@@ -32,7 +32,6 @@ The expected SHA256 checksum hash of the .html file containing the page is:
 
     63841a493283db2441650667c55cd18289d132668ee9bb6d83e4bcf8fccba3e6
 
-If loading the page from a web server, you can verify that the checksum hash of the .html file downloaded from the web server matches the expected checksum hash using the [Page Integrity browser extension](https://www.pageintegrity.net/).
 If running the page offline, it is recommended that you verify that the checksum hash of the .html file matches the expected checksum hash before opening the file in your web browser.
 
 ## Contributing
